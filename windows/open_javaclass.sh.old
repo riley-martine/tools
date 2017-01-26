@@ -1,0 +1,12 @@
+#!/bin/bash
+wmctrl -s 1
+
+cd ~/Projects/javaclass
+#top left
+python ~/Projects/tools/setwindow.py xfce4-terminal 0 0 50 46
+
+#bottom left
+python ~/Projects/tools/setwindow.py xfce4-terminal 0 505 50 47
+
+#whole right
+python ~/Projects/tools/setwindow.py xfce4-terminal 950 0 50 94
