@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Simple script to open terminals the way I like them. Will be expanded soon to a nice library.
+
+wmctrl -s 1
+
+WD=~/Projects/advJavaClass/$1
+
+xfce4-terminal --working-directory=$WD/src
+wmctrl -r :ACTIVE: -b add,maximized_vert
+wmctrl -r :ACTIVE: -e 0,961,0,951,1010
+
+xfce4-terminal --working-directory=$WD
+wmctrl -r :ACTIVE: -e 0,1,0,951,482
+
+xfce4-terminal --working-directory=$WD
+wmctrl -r :ACTIVE: -e 0,1,522,951,498
+
