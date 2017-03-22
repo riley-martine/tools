@@ -7,6 +7,11 @@ Python script to recusively determine size of files/directories and show a windo
 ### backupfull.sh
 In development, list of rsync excludes directories.
 
+### biotext
+In dev, bottom terminal for reading in biology. shh!
+
+Two row terminal. Only for xfce but can be adapted. bottom of the screen, always on top.
+
 ### getinstalled.sh
 With a filesystem.manifest, show all the packages installed not in it.
 
