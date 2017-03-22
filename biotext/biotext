@@ -1,10 +1,13 @@
-#!/bin/zsh 
+#!/bin/bash 
 
-xfce4-terminal
-wmctrl -r :ACTIVE: -b add,maximized_horz
-wmctrl -r :ACTIVE: -e 0,0,990,-1,20
+width=$(xdpyinfo | awk '/dimensions/{print $2}' | awk -F'x' '{print $1}')
+height=$(xdpyinfo | awk '/dimensions/{print $2}' | awk -F'x' '{print $2}')
+
+t_height=20
+border=5
+
+xfce4-terminal --hide-borders
+wmctrl -r :ACTIVE: -e 0,0,$((height-t_height)),$width,$t_height
 wmctrl -r :ACTIVE: -b add,above
 
-toggle.py
-toggle.py
-#wmctrl -r :ACTIVE: -b add,skip_taskbar
+#it is ONE pixel too narrow and nothing helps :(
