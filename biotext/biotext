@@ -1,0 +1,10 @@
+#!/bin/zsh 
+
+xfce4-terminal
+wmctrl -r :ACTIVE: -b add,maximized_horz
+wmctrl -r :ACTIVE: -e 0,0,990,-1,20
+wmctrl -r :ACTIVE: -b add,above
+
+toggle.py
+toggle.py
+#wmctrl -r :ACTIVE: -b add,skip_taskbar
