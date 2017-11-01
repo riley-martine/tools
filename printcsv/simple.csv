@@ -1,0 +1,5 @@
+first_name,last_name,grade,like,blank,morblank
+Luke,Skywalkerr,101,y,,,
+Ebony,D'arkness,53,n,notblank
+Bilbo,Baggins,89,y
+NoLast,,67,n

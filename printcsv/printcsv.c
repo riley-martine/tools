@@ -1,0 +1,265 @@
+/* This is a program that prints out a CSV file. Later it may do other things.
+ * It takes in one argument, a file with the extension ".csv". 
+ * It prints out a table, that represents the CSV.
+ * Author: Riley Martine
+ * Date: October 2017
+ */
+
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+//struct line {
+//  char data[];
+//};
+//
+//
+//struct Csv {
+//    char *headers[];
+//};
+
+//TODO the quotes
+
+int get_num_columns(char *line);
+size_t* get_longest(char *line, int numcols);
+void print_many(char* str, int num, char * vert);
+
+int main(int argc, char *argv[]){
+    FILE *fp;
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t read;
+    static int simple_flag;
+    int c;
+
+
+    while ((c = getopt(argc, argv, "s") ) != -1) {
+        switch (c) {
+            case 's': simple_flag = 1; break;
+            default:
+                simple_flag = 0;
+        }
+    }
+
+    char *hor_thicc;
+    char *hor_thinn;
+    char *vert;
+
+    if (simple_flag == 0) {
+        hor_thicc = "=";
+        hor_thinn = "-";
+        vert = "|";
+    } else {
+        hor_thicc = "=";
+        hor_thinn = " ";
+        vert = "|";
+    }
+
+    // printf("simple: %d %d\n", simple_flag, optind);
+    
+
+    fp = fopen(argv[optind], "r");
+    if (fp == NULL)
+        exit(EXIT_FAILURE);
+
+    // PASS I: Get the number of columns, the number of headers, and the number of rows
+    int num_lines = -1;
+    int num_headers = 0;
+    int num_columns = 0;
+    while ((read = getline(&line, &len, fp)) != -1) {
+        if (num_lines == -1){
+            num_headers = get_num_columns(line);
+        }
+        int line_columns = get_num_columns(line);
+        if( line_columns > num_columns )
+            num_columns = line_columns;
+
+        //printf("%s", line);
+        num_lines++;
+    }
+    //printf("num headers: %d\n", num_headers);
+    //printf("num lines: %d\n", num_lines);
+    //printf("num columns: %d\n", num_columns);
+
+
+    // PASS II: Get the length of the longest string in each column
+    fp = fopen(argv[optind], "r");
+    if (fp == NULL)
+        exit(EXIT_FAILURE);
+   
+    size_t most_longest[num_columns];
+    for (int i = 0; i < num_columns; i++) {
+         most_longest[i] = 0;
+    }
+    while ((read = getline(&line, &len, fp)) != -1) {
+        size_t *longest;
+        longest = get_longest(line, num_columns);
+
+       // for (int i = 0; i < num_columns; i++) {
+       //     printf("%zu,", longest[i]);
+       // }
+       // puts("");
+
+        for(int i = 0; i < num_columns; i++) {
+            if(longest[i] > most_longest[i])
+                most_longest[i] = longest[i];
+        }
+        free(longest);
+    }
+    //for (int i = 0; i < num_columns; i++) {
+    //    printf("%zu,", most_longest[i]);
+    //}
+
+    // SECTION I: Get some more information
+    size_t total_width = 0;
+    for(int i = 0; i < num_columns; i++){
+        total_width += most_longest[i];
+    }
+
+    total_width += (num_columns + 1);
+
+    //puts("");
+
+
+    // PASS III: Print her!!
+    fp = fopen(argv[optind], "r");
+    if (fp == NULL)
+        exit(EXIT_FAILURE);
+
+    //char* headers[num_headers];
+    //char* lines[num_lines][num_columns];
+    int index = 0;
+    const char s = ',';
+    int temp_var = 0;
+    print_many(hor_thicc, total_width, vert);
+    while ((read = getline(&line, &len, fp)) != -1) {
+
+        // If the last character of the line is a newline, replace it with a NULL byte
+        if(line[strlen(line)-1] == 10){
+            line[strlen(line)-1] = 0;
+        }
+        
+        if (temp_var != 2 || simple_flag == 0){
+            printf("%s", vert);
+            temp_var++ ;
+        }
+
+        // Print defined columns
+        int colnum = 0;                                  // The current column, 0 indexed
+        unsigned int pos = 0;                            // The absolute position in the line
+        for(colnum = 0; colnum < num_columns; colnum++){ // For every column
+            unsigned int col_len = 0;                    // Length of data in column
+            while (line[pos] != s && line[pos] != 0 && pos < strlen(line)){    // While the current index isn't , or 0
+                printf("%c", line[pos]);                 // Print the current character
+                pos++;
+                col_len++;
+            }
+            pos++;  // For the comma
+            //printf("%d", col_len);
+            size_t pad_this_many =  most_longest[colnum] - col_len; // Find out how much to pad
+            for(unsigned int j = 0; j<pad_this_many; j++){   // Pad it
+                printf(" ");
+            }
+            printf("%s", vert);  // Close column
+        }
+
+        // Print undefined columns
+        /*
+        while(colnum != num_columns){
+           for(unsigned int l = 0; l<most_longest[colnum]; l++){
+               printf(" ");
+           }
+           printf("|");
+           colnum++;
+        }
+        */
+        puts("");
+
+
+        // Print dividing line
+        if (index < num_lines) {
+            printf("%s", vert);
+            for(int i = 0; i<num_columns; i++) {
+               for(unsigned int j = 0; j<most_longest[i];j++){
+                   if(index==0){
+                       printf("%s", hor_thicc);
+                   }
+                   if(index!=0&&simple_flag==0){
+                       printf("%s", hor_thinn);
+                   }
+               }
+               if (index == 0 || simple_flag ==0)
+                   printf("%s", vert);
+
+            }
+            if (index == 0  || simple_flag==0)
+              puts("");
+        }
+
+      index++;
+    }
+    print_many(hor_thicc, total_width, vert);
+   
+
+    free(line);
+    exit(EXIT_SUCCESS);
+}
+
+int get_num_columns(char *line) {
+    int num_columns = 0;
+    const char s[2] = ",";
+    char *token;
+    char linecpy[strlen(line)];
+    strcpy(linecpy, line);
+
+    token = strtok(linecpy, s);
+    while( token != NULL) {
+        num_columns++;
+        token = strtok(NULL, s);
+    }
+    return num_columns;
+  
+}
+
+size_t* get_longest(char *line, int numcols) {
+    size_t longest[numcols];
+    const char s[2] = ",";
+    char *token;
+    char linecpy[strlen(line)];
+    strcpy(linecpy, line);
+    
+    token = strtok(linecpy, s);
+    int index = 0;
+    while( token != NULL) {
+        // REMOVE NEWLINE
+        //printf("%zu, %s\n", strcspn(token, "\n"), token);
+        longest[index] = strcspn(token, "\n");
+        token = strtok(NULL, s);
+        index++;
+    }
+    size_t * ret = malloc( sizeof (size_t) * numcols);
+    memcpy(ret, longest, sizeof(size_t) * numcols);
+    return ret;
+}
+
+
+void print_many(char* str, int num, char* vert){
+    printf("%s", vert);
+    for(int i = 0; i < num-2; i++){
+        printf("%s",str);
+    }
+    printf("%s", vert);
+    puts("");
+}
+
+
+
+
+/* Some works cited
+ * https://linux.die.net/man/3/getline
+ * https://www.tutorialspoint.com/c_standard_library/c_function_strtok.htm
+ * https://www.tutorialspoint.com/c_standard_library/c_function_strcpy.htm
+ * https://www.gnu.org/software/libc/manual/html_node/Example-of-Getopt.html#Example-of-Getopt
+ */
