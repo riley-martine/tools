@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.6
 """show info page with actual size of files + folders"""
 import sys
 import os
