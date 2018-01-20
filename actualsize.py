@@ -17,9 +17,12 @@ def du(path):
 def du_not_sh(path):
     return subprocess.check_output(['sudo', 'du', '-sb', path]).split()[0].decode('utf-8')
 
-cwd = sys.argv[1]
+if len(sys.argv) > 1:
+    cwd = sys.argv[1]
+else:
+    cwd = '.'
 item_sizes = []
-for item in os.listdir(sys.argv[1]):
+for item in os.listdir(cwd):
     item_abs = os.path.join(cwd, item)
     size = du(item_abs)
     size_bytes = int(du_not_sh(item_abs))
