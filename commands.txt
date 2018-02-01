@@ -1,0 +1,6 @@
+# watch star wars
+telnet towel.blinkenlights.nl
+
+# show factors of current unix time
+watch -n.5 factor \$\(date +%s\)
+
