@@ -1,5 +1,5 @@
 # tools
-collection of useful tools
+This is my collection of useful tools/scripts. I use some of these every day and some very infrequently. I wrote most of them.
 
 ### biotext
 In dev, bottom terminal for reading in biology. shh!
