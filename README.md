@@ -9,6 +9,9 @@ Two row terminal. Only for xfce but can be adapted. bottom of the screen, always
 ### coinflip
 Blazing fast implementation of the time-tested "coin flip" algorithm. Prints "Heads" or "Tails".
 
+### prime
+Test if a number given as argument 1 is prime.
+
 ### printcsv
 Does what it says on the tin. Not very good at what it does.
 
