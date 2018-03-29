@@ -1,5 +1,6 @@
 import unittest
 from timeadd import add_times, parse_times, TimeStruct
+from timeuntil import time_until
 
 class TestStruct(unittest.TestCase):
     
@@ -126,10 +127,27 @@ class TestAdd(unittest.TestCase):
         self.assertEqual(t2, TimeStruct(2, 2))
 
 
-class TestIntegration(unittest.TestCase):
+class TestUntil(unittest.TestCase):
+    twelve = TimeStruct(12, 0)
 
     def test_zero(self):
-        pass
+        t1 = time_until(self.twelve, now=self.twelve)
+        self.assertEqual(t1, TimeStruct(0, 0))
+
+    def test_hours(self):
+        t1 = time_until(TimeStruct(1, 0), now=self.twelve)
+        self.assertEqual(t1, TimeStruct(1, 0))
+
+    def test_minutes(self):
+        t1 = time_until(TimeStruct(12, 54), now=self.twelve)
+        self.assertEqual(t1, TimeStruct(0, 54))
+
+    def test_rollover_minutes(self):
+        t1 = time_until(TimeStruct(2, 30), now=TimeStruct(12, 40))
+        self.assertEqual(t1, TimeStruct(1, 50))
+        t2 = time_until(TimeStruct(2, 1), now=TimeStruct(1, 58))
+        self.assertEqual(t2, TimeStruct(0, 3))
+
 
 if __name__ == "__main__":
     unittest.main()
