@@ -33,6 +33,9 @@ Opens terminals for my Java Class
 ## npm-upgrade.sh
 Upgrades all installed npm packages
 
+## pageadder.py
+Given a page range in the form 11-12,15-33,56-58, a page number and what that number is in the pdf, outputs the same range with constants added, so it can be printed.
+
 ## percenterror.py
 I always forget if you use actual-expected or expected-actual. This script remembers for me.
 
